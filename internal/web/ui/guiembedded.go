@@ -1,6 +1,6 @@
 //+build prod
 
-package gui
+package ui
 
 import (
 	"embed"
