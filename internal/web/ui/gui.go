@@ -10,6 +10,6 @@ import (
 func init() {
 	fmt.Println("dev")
 	guifs = func() http.FileSystem {
-		return http.Dir("./internal/web/gui/gui")
+		return http.Dir("./internal/web/ui/gui")
 	}()
 }
