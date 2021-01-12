@@ -7,8 +7,6 @@ import (
 )
 
 func Serve() {
-	http.HandleFunc("/gui/", func(w http.ResponseWriter, r *http.Request) {
-		http.FileServer(gui.GetGuiFS()).ServeHTTP(w, r)
-	})
+	http.Handle("/", http.FileServer(gui.GetGuiFS()))
 	http.ListenAndServe(":80", nil)
 }

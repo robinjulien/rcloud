@@ -5,14 +5,21 @@ package gui
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 )
 
 func init() {
 	fmt.Println("prod")
 	guifs = func() http.FileSystem {
-		//go:embed gui
-		var fs embed.FS
-		return http.FS(fs)
+		//go:embed gui/*
+		var fsys embed.FS
+		guifsys, err := fs.Sub(fsys, "gui")
+
+		if err != nil {
+			panic(err)
+		}
+
+		return http.FS(guifsys)
 	}()
 }
