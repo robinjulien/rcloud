@@ -1,7 +1,17 @@
 package main
 
-import "github.com/robinjulien/rcloud/internal/web/server"
+import (
+	"fmt"
+	"os"
 
+	"github.com/robinjulien/rcloud/internal/web/server"
+)
+
+// usage ./rcloud <directory path> <database path> [-p port]
 func main() {
-	server.Serve()
+	if len(os.Args) == 3 {
+		server.Serve()
+	} else {
+		fmt.Fprintf(os.Stderr, "Inavlid arguments.")
+	}
 }

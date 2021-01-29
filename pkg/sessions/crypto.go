@@ -6,8 +6,11 @@ import (
 	"hash"
 )
 
-// HashType is the hash type used by HMAC
-var HashType func() hash.Hash = sha512.New
+// Defaults
+var (
+	// HashType is the hash type used by HMAC
+	HashType func() hash.Hash = sha512.New
+)
 
 // ValidMAC reports whether messageMAC is a valid HMAC tag for message.
 // This function is copied from the official Go documentation. This is why there is no error checking.
