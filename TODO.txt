@@ -1,0 +1,4 @@
+Add comments
+Remove expired session from authstore
+add path argument for /fm/ls route
+maybe change error code for ls on a file, 404 when not found
