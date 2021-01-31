@@ -1,9 +1,10 @@
 package filemanager
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/robinjulien/rcloud/internal/web/api/auth"
 	"github.com/robinjulien/rcloud/internal/web/api/common"
@@ -23,6 +24,8 @@ func Ls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	path := SanitizePath(r.FormValue("path"))
+
 	u := auth.GetUserByCookies(r)
 
 	if u == nil {
@@ -30,11 +33,16 @@ func Ls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files, err := ioutil.ReadDir(".")
+	files, err := ioutil.ReadDir(path)
 
 	if err != nil {
-		w.WriteHeader(http.StatusForbidden)
-		fmt.Println(err)
+		if errors.Is(err, os.ErrNotExist) {
+			w.WriteHeader(http.StatusNotFound)
+		} else if errors.Is(err, os.ErrPermission) {
+			w.WriteHeader(http.StatusForbidden)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 
