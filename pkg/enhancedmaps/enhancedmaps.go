@@ -48,7 +48,6 @@ func (db *Map) ReadFile(filename string) error {
 	decoder := gob.NewDecoder(file)
 	var data DataType
 	err = decoder.Decode(&data)
-	fmt.Println("on est la 1")
 
 	if err != nil {
 		return ErrorData
@@ -72,7 +71,6 @@ func (db *Map) WriteFile(filename string) error {
 
 	encoder := gob.NewEncoder(file)
 	err = encoder.Encode(db.data)
-	fmt.Println("on est la 2")
 
 	if err != nil {
 		fmt.Println(err)

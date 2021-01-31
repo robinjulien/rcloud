@@ -12,6 +12,10 @@ type responseAmILoggedIn struct {
 
 // AmILoggedIn /auth/amiloggedin tells wheras the given sessionid is valid or not
 func AmILoggedIn(w http.ResponseWriter, r *http.Request) {
+	if !common.CheckMethod(w, r, "GET") {
+		return
+	}
+
 	u := GetUserByCookies(r)
 
 	if u == nil {

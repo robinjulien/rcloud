@@ -7,8 +7,10 @@ import (
 	"github.com/robinjulien/rcloud/internal/web/ui"
 )
 
-func Serve() {
+// Serve set up directorypath, routes and launch the server
+func Serve(directorypath string, databasepath string, port string) {
+	api.SetUp(directorypath, databasepath)
 	http.Handle("/", http.FileServer(ui.GetGuiFS()))
 	http.Handle("/api/", http.StripPrefix("/api", api.GetAPIMux()))
-	http.ListenAndServe(":80", nil)
+	http.ListenAndServe(":"+port, nil)
 }

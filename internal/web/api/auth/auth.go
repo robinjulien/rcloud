@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/robinjulien/rcloud/pkg/enhancedmaps"
 	"github.com/robinjulien/rcloud/pkg/sessions"
@@ -35,24 +36,19 @@ func init() {
 	authstore.Users = enhancedmaps.New()
 	authstore.Users.Set("admin", u)
 	gob.Register(User{})
+}
 
-	if len(os.Args) >= 3 {
-		err := authstore.Users.ReadFile(os.Args[2]) // os.Args[2] is <database directory>
-
-		if err != nil {
-			if errors.Is(err, enhancedmaps.ErrorFileNotExist) {
-				// File not exists or not having rights to read
-				err2 := authstore.Users.WriteFile(os.Args[2])
-
-				if err2 != nil {
-					panic(err2)
-				}
-			} else {
-				panic(err)
+// SetUp sets up ressources needed for the auth part
+func SetUp(databasepath string) {
+	if err := authstore.Users.ReadFile(databasepath); err != nil { // os.Args[2] is <database directory>
+		if errors.Is(err, enhancedmaps.ErrorFileNotExist) { // File not exists or not having rights to read
+			if err2 := authstore.Users.WriteFile(os.Args[2]); err2 != nil {
+				panic(err2)
 			}
+		} else {
+			panic(err)
 		}
 	}
-
 }
 
 // Handler returns auth module handler
@@ -84,7 +80,7 @@ func GetUserByCookies(r *http.Request) *User {
 
 	session := authstore.GetSessionByID(sid)
 
-	if session == nil {
+	if session == nil || session.Expires.Before(time.Now()) {
 		return nil
 	}
 

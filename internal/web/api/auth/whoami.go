@@ -19,6 +19,10 @@ type responseWhoAmI struct {
 
 // WhoAmI /auth/amiloggedin tells who you are if you're connected
 func WhoAmI(w http.ResponseWriter, r *http.Request) {
+	if !common.CheckMethod(w, r, "GET") {
+		return
+	}
+
 	u := GetUserByCookies(r)
 	if u == nil {
 		common.RespondJSON(w, responseWhoAmI{LoggedIn: false, PublicUser: PublicUser{}})
