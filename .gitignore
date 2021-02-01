@@ -2,4 +2,4 @@ bin
 rcloud
 rcloud.exe
 *.exe
-test.db
+*.db

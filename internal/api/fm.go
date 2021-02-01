@@ -23,10 +23,18 @@ var (
 
 // FmHandler returns handler of the filemanager part of the api
 func FmHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.Handle("/ls", MethodMiddleware("GET", http.HandlerFunc(Ls)))
-	mux.Handle("/mkdir", MethodMiddleware("POST", http.HandlerFunc(Mkdir)))
-	return mux
+	router := http.NewServeMux()
+	router.Handle("/ls", MethodMiddleware("GET", http.HandlerFunc(Ls)))
+	router.Handle("/mkdir", MethodMiddleware("POST", http.HandlerFunc(Mkdir)))
+	router.Handle("/touch", MethodMiddleware("POST", http.HandlerFunc(Touch)))
+	router.Handle("/rm", MethodMiddleware("POST", http.HandlerFunc(Rm)))
+	router.Handle("/cp", MethodMiddleware("POST", http.HandlerFunc(Cp)))
+	router.Handle("/mv", MethodMiddleware("POST", http.HandlerFunc(Mv)))
+	router.Handle("/cat", MethodMiddleware("GET", http.HandlerFunc(Cat)))
+	router.Handle("/echo", MethodMiddleware("POST", http.HandlerFunc(Echo)))
+	router.Handle("/download", MethodMiddleware("GET", http.HandlerFunc(Download)))
+	router.Handle("/upload", MethodMiddleware("POST", http.HandlerFunc(Upload)))
+	return router
 }
 
 // SanitizePath take an input path and return a sanitized version of it
@@ -134,6 +142,11 @@ func Cp(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: err.Error()})
+		return
+	}
+
+	if stats, _ := fsrc.Stat(); stats.IsDir() {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "src is a directory"})
 		return
 	}
 
