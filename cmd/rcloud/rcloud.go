@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/robinjulien/rcloud/internal/web/server"
+	"github.com/robinjulien/rcloud/internal/server"
 )
 
 // usage ./rcloud <directory path> <database path> [-p port]

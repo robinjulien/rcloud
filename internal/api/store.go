@@ -1,4 +1,4 @@
-package auth
+package api
 
 import (
 	"bytes"
@@ -7,23 +7,27 @@ import (
 	"github.com/robinjulien/rcloud/pkg/enhancedmaps"
 )
 
+// AuthStore is the type that stores users and sessions
 type AuthStore struct {
 	Users    *enhancedmaps.Map
 	Sessions []Session
 }
 
+// User is the user type as stored in an AuthStore
 type User struct {
 	ID      string
 	PwdHash []byte
 	Admin   bool
 }
 
+// Session is the session type as stored in an AuthStore
 type Session struct {
 	SID     []byte
 	UID     string
 	Expires time.Time
 }
 
+// GetUserByID returns a user given its Id in an authstore, or nil if it doesn't exists
 func (as *AuthStore) GetUserByID(id string) *User {
 	userint, err := as.Users.GetSafe(id)
 
@@ -40,6 +44,7 @@ func (as *AuthStore) GetUserByID(id string) *User {
 	return &user
 }
 
+// GetSessionByID returns a session given its Id in an authstore, or nil if it doesn't exists
 func (as *AuthStore) GetSessionByID(sid []byte) *Session {
 	for _, s := range as.Sessions {
 		if bytes.Equal(s.SID, sid) {
@@ -50,6 +55,7 @@ func (as *AuthStore) GetSessionByID(sid []byte) *Session {
 	return nil
 }
 
+// AddSession adds a session in an authstore
 func (as *AuthStore) AddSession(sid []byte, userid string, expires time.Time) {
 	session := Session{
 		SID:     sid,
@@ -59,6 +65,7 @@ func (as *AuthStore) AddSession(sid []byte, userid string, expires time.Time) {
 	as.Sessions = append(as.Sessions, session)
 }
 
+// RemoveSession removes a sesison in an authstore
 func (as *AuthStore) RemoveSession(sid []byte) {
 	var index int = -1
 
@@ -74,19 +81,25 @@ func (as *AuthStore) RemoveSession(sid []byte) {
 	}
 }
 
+// remove the i-th element of a session slice
 func remove(s []Session, i int) []Session {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
 }
 
+// CreateUser adds a new user in an authstore
+// TODO check if user already exists
 func (as *AuthStore) CreateUser(u User) {
 	as.Users.Set(u.ID, u)
 }
 
+// RemoveUserByID removes a user in an authstore
 func (as *AuthStore) RemoveUserByID(uid string) {
 	as.Users.Remove(uid)
 }
 
+// EditUser set a existing user given new informations
+// TODO set field by field
 func (as *AuthStore) EditUser(uid string, u User) {
 	if uid != u.ID {
 		return
