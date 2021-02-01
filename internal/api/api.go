@@ -9,6 +9,12 @@ import (
 	"github.com/robinjulien/rcloud/pkg/enhancedmaps"
 )
 
+// BaseResponse is the base response resturned by the API
+type BaseResponse struct {
+	Success      bool   `json:"success"`
+	ErrorMessage string `json:"errorMessage"`
+}
+
 // SetUp sets up all the ressources needed for the use of the api
 func SetUp(directorypath string, databasepath string) {
 	os.Chdir(directorypath)
