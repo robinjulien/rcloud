@@ -63,6 +63,14 @@ type responseLogin struct {
 
 // Login endpoint /auth/login
 func Login(w http.ResponseWriter, r *http.Request) {
+	// Everytime one try to log in, all expired sessions are removed from the store
+	for i, s := range authstore.Sessions {
+		if s.Expires.Before(time.Now()) {
+			//authstore.RemoveSession(s.SID)
+			authstore.Sessions = remove(authstore.Sessions, i)
+		}
+	}
+
 	id := r.PostFormValue("id")
 	password := r.PostFormValue("password")
 

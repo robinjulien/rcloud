@@ -75,6 +75,13 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = authstore.Users.WriteFile(authstore.Path)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false})
+		return
+	}
+
 	RespondJSON(w, BaseResponse{Success: true})
 }
 
@@ -88,6 +95,13 @@ func DelUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := authstore.Users.Remove(id)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false})
+		return
+	}
+
+	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
 		RespondJSON(w, BaseResponse{Success: false})
@@ -158,6 +172,13 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 			RespondJSON(w, BaseResponse{Success: false})
 			return
 		}
+	}
+
+	err := authstore.Users.WriteFile(authstore.Path)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false})
+		return
 	}
 
 	RespondJSON(w, BaseResponse{Success: true})

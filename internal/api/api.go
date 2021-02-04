@@ -22,9 +22,11 @@ type BaseResponse struct {
 func SetUp(directorypath string, databasepath string) {
 	os.Chdir(directorypath)
 
-	if err := authstore.Users.ReadFile(databasepath); err != nil { // os.Args[2] is <database directory>
+	authstore.Path = databasepath
+
+	if err := authstore.Users.ReadFile(authstore.Path); err != nil {
 		if errors.Is(err, enhancedmaps.ErrorFileNotExist) { // File not exists or not having rights to read
-			if err2 := authstore.Users.WriteFile(os.Args[2]); err2 != nil {
+			if err2 := authstore.Users.WriteFile(authstore.Path); err2 != nil {
 				panic(err2)
 			}
 		} else {
@@ -98,7 +100,7 @@ func GetUserByCookies(r *http.Request) *User {
 
 	session := authstore.GetSessionByID(sid)
 
-	if session == nil || session.Expires.Before(time.Now()) {
+	if session == nil || session.Expires.Before(time.Now()) { // check if session isn't expired, but it should never happen as all expired sessions are removed from the store on login try
 		return nil
 	}
 

@@ -9,6 +9,7 @@ import (
 
 // AuthStore is the type that stores users and sessions
 type AuthStore struct {
+	Path     string
 	Users    *enhancedmaps.Map
 	Sessions []Session
 }
