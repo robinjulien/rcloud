@@ -9,3 +9,19 @@ html, body {
 a {
 	color: inherit;
 }
+
+.container {
+	margin: 20px 15%;
+}
+
+@media (max-width: 800px) {
+	.container {
+		margin: 20px 10%;
+	}
+}
+
+@media (max-width: 600px) {
+	.container {
+		margin: 20px 5%;
+	}
+}

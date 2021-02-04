@@ -10,6 +10,13 @@ import { NavbarComponent } from './elements/navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { LogoutViewComponent } from './pages/logout/logout-view/logout-view.component';
+import { FilemanagerService } from './services/filemanager.service';
+import { HumanreadablesizePipe } from './pipes/humanreadablesize.pipe';
+import { ExttoimgPipe } from './pipes/exttoimg.pipe';
+import { IsdirPipe } from './pipes/isdir.pipe';
+import { IsnotdirPipe } from './pipes/isnotdir.pipe';
+import { SortfoldersfilesPipe } from './pipes/sortfoldersfiles.pipe';
+import { SortfilesalphabeticalPipe } from './pipes/sortfilesalphabetical.pipe';
 
 @NgModule({
   declarations: [
@@ -18,6 +25,12 @@ import { LogoutViewComponent } from './pages/logout/logout-view/logout-view.comp
     DashboardViewComponent,
     NavbarComponent,
     LogoutViewComponent,
+    HumanreadablesizePipe,
+    ExttoimgPipe,
+    IsdirPipe,
+    IsnotdirPipe,
+    SortfoldersfilesPipe,
+    SortfilesalphabeticalPipe,
   ],
   imports: [
     BrowserModule,
@@ -26,7 +39,8 @@ import { LogoutViewComponent } from './pages/logout/logout-view/logout-view.comp
 	FormsModule
   ],
   providers: [
-	  AuthService
+	  AuthService,
+	  FilemanagerService
   ],
   bootstrap: [AppComponent]
 })

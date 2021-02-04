@@ -50,7 +50,7 @@ func SanitizePath(path string) string {
 type fileType struct {
 	IsDir bool   `json:"isDir"`
 	Name  string `json:"name"`
-	Size  int64  `json:""`
+	Size  int64  `json:"size"`
 }
 
 type responseLs struct {
