@@ -164,3 +164,53 @@ func (db *Map) Exists(key string) (bool, error) {
 
 	return false, ErrorNotInit
 }
+
+func (db *Map) GetUnsafeData() DataType {
+	return db.data
+}
+
+func (db *Map) Keys() []string {
+	if db.data == nil {
+		return []string{}
+	}
+
+	keys := make([]string, 0, len(db.data))
+
+	for k := range db.data {
+		keys = append(keys, k)
+	}
+
+	return keys
+}
+
+func (db *Map) Values() []interface{} {
+	if db.data == nil {
+		tmp := make([]interface{}, 0)
+		return tmp
+	}
+
+	values := make([]interface{}, 0, len(db.data))
+
+	for _, v := range db.data {
+		values = append(values, v)
+	}
+
+	return values
+}
+
+func (db *Map) Entries() ([]string, []interface{}) {
+	if db.data == nil {
+		tmp := make([]interface{}, 0)
+		return []string{}, tmp
+	}
+
+	keys := make([]string, 0, len(db.data))
+	values := make([]interface{}, 0, len(db.data))
+
+	for k, v := range db.data {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+
+	return keys, values
+}

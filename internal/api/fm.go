@@ -1,8 +1,3 @@
-/*
-In the filemanager api, permissions errors are treated as server configuration errors, thus 500.
-A file not found is treated as not found error, thus 404
-A file that already exists when it should be created is 200 whereas it is 201 if it is created.
-*/
 package api
 
 import (
@@ -44,6 +39,10 @@ func SanitizePath(path string) string {
 	res = strings.ReplaceAll(res, "~", "")
 	res = strings.ReplaceAll(res, "..", "")
 	res = filepath.Clean(res)
+
+	if filepath.IsAbs(res) {
+		return "."
+	}
 
 	return res
 }
@@ -269,5 +268,43 @@ func Download(w http.ResponseWriter, r *http.Request) {
 
 // Upload /fm/upload uploads multiple files
 func Upload(w http.ResponseWriter, r *http.Request) {
+	// Parse our multipart form, 10 << 20 specifies a maximum of 10MB of its file parts stored in the memory, the remainder will be stored in temporary files
+	// This does NOT specifies a maximum file or upload size. To do so, you have to use http.MaxByteReader.
+	errMultipartForm := r.ParseMultipartForm(10 << 20)
 
+	if errMultipartForm != nil {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: errMultipartForm.Error()})
+		return
+	}
+
+	path := SanitizePath(r.PostFormValue("path"))
+
+	files := r.MultipartForm.File["files"]
+
+	for i := range files { // loop through the files one by one
+		file, errFile := files[i].Open()
+		defer file.Close()
+
+		if errFile != nil {
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: errFile.Error()})
+			return
+		}
+
+		out, errOut := os.Create(path + "/" + files[i].Filename)
+		defer out.Close()
+
+		if errOut != nil {
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: errOut.Error()})
+			return
+		}
+
+		_, errCopy := io.Copy(out, file)
+
+		if errCopy != nil {
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: errCopy.Error()})
+			return
+		}
+	}
+
+	RespondJSON(w, BaseResponse{Success: true})
 }

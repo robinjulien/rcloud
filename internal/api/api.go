@@ -1,12 +1,15 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/robinjulien/rcloud/pkg/enhancedmaps"
+	"github.com/robinjulien/rcloud/pkg/sessions"
 )
 
 // BaseResponse is the base response resturned by the API
@@ -36,6 +39,7 @@ func Handler() http.Handler {
 
 	router.Handle("/auth/", http.StripPrefix("/auth", AuthHandler()))
 	router.Handle("/fm/", http.StripPrefix("/fm", AuthMiddleware(FmHandler())))
+	router.Handle("/users/", http.StripPrefix("/users", AdminMiddleware(UsersHandler())))
 
 	return router
 }
@@ -74,4 +78,68 @@ func MethodMiddleware(method string, next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// GetUserByCookies return a user or nil given an http request
+func GetUserByCookies(r *http.Request) *User {
+	sidcookie, errCSID := r.Cookie("sessionid")
+	maccookie, errCMAC := r.Cookie("signature")
+
+	if errCSID != nil || errCMAC != nil {
+		return nil
+	}
+
+	sid := sessions.FromBase64(sidcookie.Value)
+	mac := sessions.FromBase64(maccookie.Value)
+
+	if !sessions.ValidMAC(sid, mac, ServerKey) {
+		return nil
+	}
+
+	session := authstore.GetSessionByID(sid)
+
+	if session == nil || session.Expires.Before(time.Now()) {
+		return nil
+	}
+
+	u := authstore.GetUserByID(session.UID)
+
+	return u // Can be nil
+}
+
+// AuthMiddleware is used as a middleware to know if a user is authenticated
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u := GetUserByCookies(r)
+
+		if u == nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), ContextKeyUser, *u)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// AdminMiddleware is used as a middleware to know if a user is authenticated as admin
+func AdminMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u := GetUserByCookies(r)
+
+		if u == nil || !u.Admin {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), ContextKeyUser, *u)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// UserFromContext returns the user contained in the context values from AuthMiddleware
+func UserFromContext(ctx context.Context) User {
+	return ctx.Value(ContextKeyUser).(User)
 }
