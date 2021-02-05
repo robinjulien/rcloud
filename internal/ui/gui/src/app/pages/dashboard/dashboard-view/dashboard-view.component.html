@@ -1,10 +1,12 @@
 <div class="container controls">
 	<div class="buttons">
+		<button class="btn btn-secondary" (click)="ls()"><img
+				src="/assets/icons/refresh-cw.svg"><span>Refresh</span></button>
 		<button class="btn btn-secondary" (click)="mkdir()"><img src="/assets/icons/folder-plus.svg"><span>New
 				Folder</span></button>
 		<button class="btn btn-secondary" (click)="touch()"><img src="/assets/icons/file-plus.svg"><span>New
 				File</span></button>
-		<button class="btn btn-secondary"><img src="/assets/icons/clipboard.svg"><span>Paste</span></button>
+		<button class="btn btn-secondary" (click)="paste()"><img src="/assets/icons/clipboard.svg"><span>Paste</span></button>
 		<button class="btn btn-secondary" (click)="upload(inputfiles)"><img src="/assets/icons/upload.svg"><span>Upload
 				Selection</span></button>
 		<input type="file" multiple is="drop-files" class="upload-form" #inputfiles>
@@ -14,7 +16,7 @@
 
 <div class="container table-container">
 	<div *ngIf="files == undefined">
-		NEXISTE PAS
+		Directory doesn't exists
 	</div>
 	<table *ngIf="files != undefined" class="file-explorer-table">
 		<tr>
@@ -23,7 +25,7 @@
 			<th>Size</th>
 			<th></th>
 		</tr>
-		<tr *ngIf="!isRoot()" (click)="navigate(-1)">
+		<tr *ngIf="!isRoot() && lsLoaded" (click)="navigate(-1)">
 			<td><img src="/assets/icons/arrow-left-circle.svg"></td>
 			<td>..</td>
 			<td></td>
@@ -44,9 +46,9 @@
 			</td>
 		</tr>
 	</table>
-	<div *ngIf="files != undefined && files.length == 0">
-		DOSSIER VIDE
+	<div *ngIf="files != undefined && files.length == 0 && lsLoaded">
+		Empty folder
 	</div>
 </div>
 
-<app-menu-action [file]="selectedFile" (close)="selectedFile = undefined"></app-menu-action>
+<app-menu-action [file]="selectedFile" [path]="path" (closeEvent)="selectedFile = undefined" (refreshEvent)="ls()" (copycutEvent)="copycut = $event"></app-menu-action>

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { FilemanagerService, FmFile, responseLs } from 'src/app/services/filemanager.service';
+import { BaseResponse, FilemanagerService, FmFile, responseLs, copycut } from 'src/app/services/filemanager.service';
 
 function fileNameInLs(name: string, dir: FmFile[]): boolean {
 	for (let file of dir) {
@@ -19,10 +19,12 @@ function fileNameInLs(name: string, dir: FmFile[]): boolean {
 })
 export class DashboardViewComponent implements OnInit, AfterViewInit {
 	path: string = "."
+	lsLoaded: boolean = false
 	files: FmFile[] = []
 	render: boolean = false
 	uploadProgress: number = 0
 	selectedFile: FmFile | undefined
+	copycut: copycut = {path: "", name: "", operationIsCut: true}
 
 	constructor(private auth: AuthService, private fm: FilemanagerService, private router: Router, private route: ActivatedRoute) { }
 
@@ -84,6 +86,7 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 			window.history.pushState({path:newurl},'',newurl);
 		}*/
 
+		this.files = []
 		this.ls()
 	}
 
@@ -96,8 +99,10 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 	}
 
 	ls(): void {
+		this.lsLoaded = false
 		this.fm.ls(this.path).subscribe(res => {
 			this.files = res.dir
+			this.lsLoaded = true
 		})
 	}
 
@@ -133,11 +138,33 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 		})
 	}
 
-	upload(iff: HTMLInputElement): void {
+	paste(): void {
+		if (this.copycut.name != "") {
+			if (this.copycut.operationIsCut) {
+				this.fm.mv(this.copycut.path + "/" + this.copycut.name, this.path + "/" + this.copycut.name).subscribe(res => {
+					if (res.success) {
+						this.ls()
+					} else {
+						window.alert(res.errorMessage)
+					}
+				})
+			} else {
+				this.fm.copy(this.copycut.path + "/" + this.copycut.name, this.path + "/" + this.copycut.name).subscribe(res => {
+					if (res.success) {
+						this.ls()
+					} else {
+						window.alert(res.errorMessage)
+					}
+				})
+			}
+		}
+	}
+
+	upload(iff: HTMLInputElement): void { // iff = input files form
 		let params = new URLSearchParams()
 		params.append("path", this.path)
 
-		fetch("/api/fm/ls?" + params.toString(), {
+		fetch("/api/fm/ls?" + params.toString(), { // get list of files to check if it will overwrite
 			method: "GET",
 		}).then(res => res.json()).then(res => {
 			let resls = res as responseLs
@@ -148,17 +175,18 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 
 				let fd = new FormData()
 
-				let length = iff != null ? (iff.files != null ? iff.files.length : 0) : 0
+				let length = iff != null ? (iff.files != null ? iff.files.length : 0) : 0 // check if iff or iff.files is needed to get length ?
 
 				if (length == 0) {
 					return
 				}
 
+				// Build the formdata with all files
 				for (let i = 0; i < length; i++) {
-					let f = iff != null ? (iff.files != null ? iff.files[i] : "") : ""
+					let f = iff != null ? (iff.files != null ? iff.files[i] : "") : "" // check if iff or iff.files is needed to get file
 
 					let file = f as File
-					if (fileNameInLs(file.name, resls.dir)) {
+					if (fileNameInLs(file.name, resls.dir)) { // for each overwrite, ask consent
 						if (!window.confirm("File " + file.name + " already exists in this directory. Do you want to overwrite it ?")) {
 							continue // If response is false, go to next iteration without adding the file
 						}
@@ -169,8 +197,24 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 
 				fd.append("path", this.path)
 
+				// Upload progress updates the progressBar
 				req.upload.onprogress = e => {
 					this.uploadProgress = e.loaded / e.total * 100
+				}
+
+				// On finish, progressbar disappear and if there is an error, it is shown
+				req.onreadystatechange = e => {
+					if (req.readyState == 4 && req.status == 200) {
+						let json = JSON.parse(req.responseText) as BaseResponse
+
+						if (!json.success) {
+							window.alert(json.errorMessage)
+						} else {
+							this.ls()
+						}
+
+						this.uploadProgress = 0
+					}
 				}
 
 				// Automatic multipart/form-data

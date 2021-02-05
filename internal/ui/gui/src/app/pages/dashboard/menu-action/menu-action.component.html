@@ -1,50 +1,57 @@
 <div class="menu-action-container" *ngIf="file != undefined">
-	<div class="menu-action menu-action-file" *ngIf="!file.isDir">
-		<button class="btn btn-secondary btn-action"  (click)="closeActions()">
+	<div class="menu-action menu-action-file" *ngIf="!file.isDir && !editorMode">
+		<button class="btn btn-secondary btn-action"  (click)="close()">
 			<img src="/assets/icons/x.svg">
 			<span>Close</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="rm()">
 			<img src="/assets/icons/file-minus.svg">
 			<span>Delete</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="rename()">
 			<img src="/assets/icons/edit-3.svg">
 			<span>Rename</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="cut()">
 			<img src="/assets/icons/scissors.svg">
 			<span>Cut</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="copy()">
 			<img src="/assets/icons/copy.svg">
 			<span>Copy</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="openEditor()">
 			<img src="/assets/icons/edit.svg">
 			<span>Edit</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="download()">
 			<img src="/assets/icons/download.svg">
 			<span>Download</span>
 		</button>
 	</div>
-	<div class="menu-action menu-action-folders" *ngIf="file.isDir">
-		<button class="btn btn-secondary btn-action" (click)="closeActions()">
+	<div class="menu-action menu-action-folders" *ngIf="file.isDir && !editorMode">
+		<button class="btn btn-secondary btn-action" (click)="close()">
 			<img src="/assets/icons/x.svg">
 			<span>Close</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="rm()">
 			<img src="/assets/icons/folder-minus.svg">
 			<span>Delete</span>
 		</button>
-		<button class="btn btn-secondary btn-action">
+		<button class="btn btn-secondary btn-action" (click)="rename()">
 			<img src="/assets/icons/edit-3.svg">
 			<span>Rename</span>
 		</button>
 		<button class="btn btn-secondary btn-action">
-			<img src="/assets/icons/scissors.svg">
+			<img src="/assets/icons/scissors.svg" (click)="cut()">
 			<span>Cut</span>
 		</button>
+	</div>
+	<div class="editor" *ngIf="!file.isDir && editorMode">
+		<textarea [(ngModel)]="content"></textarea>
+		<div class="editor-buttons">
+			<button class="btn btn-secondary" (click)="save()">Save</button>
+			<button class="btn btn-secondary" (click)="closeEditor()">Close editor</button>
+		</div>
 	</div>
 </div>
