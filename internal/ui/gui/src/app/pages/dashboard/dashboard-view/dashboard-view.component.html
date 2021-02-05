@@ -1,10 +1,15 @@
 <div class="container controls">
 	<div class="buttons">
-		<button class="btn btn-primary"><img src="/assets/icons/folder-plus.svg" style="height: 24px;"><span>New Folder</span></button>
-		<button class="btn btn-primary"><img src="/assets/icons/file-plus.svg"><span>New File</span></button>
-		<button class="btn btn-primary"><img src="/assets/icons/clipboard.svg"><span>Paste</span></button>
+		<button class="btn btn-secondary" (click)="mkdir()"><img src="/assets/icons/folder-plus.svg"><span>New
+				Folder</span></button>
+		<button class="btn btn-secondary" (click)="touch()"><img src="/assets/icons/file-plus.svg"><span>New
+				File</span></button>
+		<button class="btn btn-secondary"><img src="/assets/icons/clipboard.svg"><span>Paste</span></button>
+		<button class="btn btn-secondary" (click)="upload(inputfiles)"><img src="/assets/icons/upload.svg"><span>Upload
+				Selection</span></button>
+		<input type="file" multiple is="drop-files" class="upload-form" #inputfiles>
 	</div>
-	<div #render></div>
+	<progress class="upload-progressbar" [value]="uploadProgress" max="100" *ngIf="uploadProgress != 0"></progress>
 </div>
 
 <div class="container table-container">
@@ -16,24 +21,32 @@
 			<th></th>
 			<th>Name</th>
 			<th>Size</th>
+			<th></th>
 		</tr>
 		<tr *ngIf="!isRoot()" (click)="navigate(-1)">
 			<td><img src="/assets/icons/arrow-left-circle.svg"></td>
 			<td>..</td>
 			<td></td>
 		</tr>
-		<tr *ngFor="let file of files | sortfoldersfiles; let i = index" (click)="file.isDir ? navigate(i) : download(i)">
-			<td *ngIf="file.isDir"><img src="/assets/icons/folder.svg"></td>
-			<td *ngIf="!file.isDir"><img [src]="'/assets/icons/' + (file.name.split('.')[file.name.split('.').length - 1] | exttoimg)"></td>
+		<tr *ngFor="let file of files | sortfoldersfiles; let i = index" (click)="clickRow($event, i)">
+			<td *ngIf="file.isDir" class="shrink"><img src="/assets/icons/folder.svg"></td>
+			<td *ngIf="!file.isDir" class="shrink"><img
+					[src]="'/assets/icons/' + (file.name.split('.')[file.name.split('.').length - 1] | exttoimg)"></td>
 
-			<td *ngIf="file.isDir">{{ file.name }}</td>
-			<td *ngIf="!file.isDir">{{ file.name }}</td>
-			
-			<td *ngIf="file.isDir"></td>
-			<td *ngIf="!file.isDir">{{ file.size | humanreadablesize }}</td>
+			<td *ngIf="file.isDir" class="expand">{{ file.name }}</td>
+			<td *ngIf="!file.isDir" class="expand">{{ file.name }}</td>
+
+			<td *ngIf="file.isDir" class="shrink"></td>
+			<td *ngIf="!file.isDir" class="shrink">{{ file.size | humanreadablesize }}</td>
+
+			<td class="shrink">
+				<button class="btn btn-secondary" (click)="showActions(i)">Actions</button>
+			</td>
 		</tr>
 	</table>
 	<div *ngIf="files != undefined && files.length == 0">
 		DOSSIER VIDE
 	</div>
 </div>
+
+<app-menu-action [file]="selectedFile" (close)="selectedFile = undefined"></app-menu-action>

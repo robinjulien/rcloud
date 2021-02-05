@@ -17,6 +17,7 @@ import { IsdirPipe } from './pipes/isdir.pipe';
 import { IsnotdirPipe } from './pipes/isnotdir.pipe';
 import { SortfoldersfilesPipe } from './pipes/sortfoldersfiles.pipe';
 import { SortfilesalphabeticalPipe } from './pipes/sortfilesalphabetical.pipe';
+import { MenuActionComponent } from './pages/dashboard/menu-action/menu-action.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { SortfilesalphabeticalPipe } from './pipes/sortfilesalphabetical.pipe';
     IsnotdirPipe,
     SortfoldersfilesPipe,
     SortfilesalphabeticalPipe,
+    MenuActionComponent,
   ],
   imports: [
     BrowserModule,

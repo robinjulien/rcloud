@@ -91,6 +91,11 @@ func Ls(w http.ResponseWriter, r *http.Request) {
 func Mkdir(w http.ResponseWriter, r *http.Request) {
 	path := SanitizePath(r.PostFormValue("path"))
 
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "directory already exists"})
+		return
+	}
+
 	err := os.MkdirAll(path, DirPerm)
 
 	if err != nil {
@@ -105,6 +110,11 @@ func Mkdir(w http.ResponseWriter, r *http.Request) {
 // Touch /fm/touch create a file given its path, if the file doesn't already exists
 func Touch(w http.ResponseWriter, r *http.Request) {
 	path := SanitizePath(r.PostFormValue("path"))
+
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "file already exists"})
+		return
+	}
 
 	file, err := os.OpenFile(path, os.O_CREATE, FilePerm)
 	file.Close()
@@ -279,7 +289,7 @@ func Upload(w http.ResponseWriter, r *http.Request) {
 
 	path := SanitizePath(r.PostFormValue("path"))
 
-	files := r.MultipartForm.File["files"]
+	files := r.MultipartForm.File["files[]"]
 
 	for i := range files { // loop through the files one by one
 		file, errFile := files[i].Open()
