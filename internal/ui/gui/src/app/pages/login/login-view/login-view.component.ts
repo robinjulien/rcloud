@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 	styleUrls: ['./login-view.component.css']
 })
 export class LoginViewComponent implements OnInit {
+	wrongidpwd: boolean = false
 
 	constructor(private auth: AuthService, private router: Router) { }
 
@@ -21,7 +22,7 @@ export class LoginViewComponent implements OnInit {
 				this.auth.loadStatus()
 				this.router.navigate(["/"])
 			} else {
-				// Afficher message d'erreur
+				this.wrongidpwd = true
 			}
 		})
 	}

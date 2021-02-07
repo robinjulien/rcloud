@@ -1,0 +1,36 @@
+<div class="container controls">
+	<button class="btn btn-secondary" (click)="addUser()">
+		<img src="/assets/icons/user-plus.svg" />
+		<span>Add User</span>
+	</button>
+</div>
+<div class="container table-container">
+	<table class="users-table">
+		<tr>
+			<th>ID</th>
+			<th>Actions</th>
+		</tr>
+		<!-- We can use pipe adminBeforeRegular -->
+		<tr *ngFor="let user of users | alphabeticalUsers; let i = index">
+			<td class="expand">{{ user.id}}{{ user.admin ? " (admin)": "" }}</td>
+			<td class="shrink">
+				<button class="btn btn-secondary btn-action" *ngIf="!user.admin" (click)="promoteUser(i)">
+					<img src="/assets/icons/arrow-up.svg" />
+					<span>Promote</span>
+				</button>
+				<button class="btn btn-secondary btn-action" *ngIf="user.admin" (click)="demoteUser(i)">
+					<img src="/assets/icons/arrow-down.svg" />
+					<span>Demote</span>
+				</button>
+				<button class="btn btn-secondary btn-action" (click)="changePasswordUser(i)">
+					<img src="/assets/icons/edit-3.svg" />
+					<span>Change Password</span>
+				</button>
+				<button class="btn btn-secondary btn-action" (click)="deleteUser(i)">
+					<img src="/assets/icons/user-minus.svg" />
+					<span>Delete</span>
+				</button>
+			</td>
+		</tr>
+	</table>
+</div>

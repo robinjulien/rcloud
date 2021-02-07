@@ -30,7 +30,7 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 		u, ok := v.(User)
 
 		if !ok {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 
@@ -44,11 +44,11 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 // AddUser /users/add adds a user
 func AddUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
-	pwdRaw := r.PostFormValue("pwd")
+	pwdRaw := r.PostFormValue("password")
 	admin := r.PostFormValue("admin")
 
 	if id == "" || pwdRaw == "" {
-		RespondJSON(w, BaseResponse{Success: false})
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -60,7 +60,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	pwdHash, ok := sessions.GeneratePwdHash([]byte(pwdRaw))
 
 	if !ok {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 
@@ -71,14 +71,14 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 
 	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 
@@ -90,21 +90,21 @@ func DelUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
 
 	if id == "" {
-		RespondJSON(w, BaseResponse{Success: false})
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	err := authstore.Users.Remove(id)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 
 	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 
@@ -114,16 +114,22 @@ func DelUser(w http.ResponseWriter, r *http.Request) {
 // EditUser /users/edit edit an existing user
 func EditUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PostFormValue("id")
-	pwdRaw := r.PostFormValue("pwd")
+	pwdRaw := r.PostFormValue("password")
 	admin := r.PostFormValue("admin")
 
 	if id == "" {
-		RespondJSON(w, BaseResponse{Success: false})
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if exists, err := authstore.Users.Exists(id); !exists || err != nil { // User doesn't exists or there is an error
-		RespondJSON(w, BaseResponse{Success: false})
+	exists, err := authstore.Users.Exists(id)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
+	}
+
+	if !exists {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "User doesn't exists"})
 		return
 	}
 
@@ -131,7 +137,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		pwdHash, ok := sessions.GeneratePwdHash([]byte(pwdRaw))
 
 		if !ok {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 
@@ -140,7 +146,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		u, ok := uRaw.(User)
 
 		if !ok || err != nil {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 
@@ -149,7 +155,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		err = authstore.Users.Set(id, u)
 
 		if err != nil {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 	}
@@ -160,7 +166,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		u, ok := uRaw.(User)
 
 		if !ok || err != nil {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 
@@ -169,15 +175,15 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		err = authstore.Users.Set(id, u)
 
 		if err != nil {
-			RespondJSON(w, BaseResponse{Success: false})
+			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
 	}
 
-	err := authstore.Users.WriteFile(authstore.Path)
+	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false})
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
 

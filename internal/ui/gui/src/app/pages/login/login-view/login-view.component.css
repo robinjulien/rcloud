@@ -1,0 +1,38 @@
+.alert {
+	padding: 20px;
+	background-color: #f44336;
+	/* Red */
+	color: white;
+	margin-bottom: 15px;
+	border-radius: .25rem;
+
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+	color: black;
+}
+
+.form-group {
+	margin: 1rem 0;
+}
+
+input[type=text], input[type=password] {
+	width: 100%;
+	padding: .375rem .75rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	border: 1px solid #545b62;
+	box-sizing: border-box;
+	background-color: white;
+}

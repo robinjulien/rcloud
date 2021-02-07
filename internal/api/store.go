@@ -87,24 +87,3 @@ func remove(s []Session, i int) []Session {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
 }
-
-// CreateUser adds a new user in an authstore
-// TODO check if user already exists
-func (as *AuthStore) CreateUser(u User) {
-	as.Users.Set(u.ID, u)
-}
-
-// RemoveUserByID removes a user in an authstore
-func (as *AuthStore) RemoveUserByID(uid string) {
-	as.Users.Remove(uid)
-}
-
-// EditUser set a existing user given new informations
-// TODO set field by field
-func (as *AuthStore) EditUser(uid string, u User) {
-	if uid != u.ID {
-		return
-	}
-
-	as.Users.Set(u.ID, u)
-}

@@ -8,7 +8,7 @@ import { FmFile } from '../services/filemanager.service';
 export class SortfilesalphabeticalPipe implements PipeTransform {
 
 	transform(items: FmFile[], ...args: unknown[]): FmFile[] {
-		return items.sort((a, b) => { return a.name.localeCompare(b.name) });
+		return items.sort((a, b) => { return a.name.toUpperCase().localeCompare(b.name.toUpperCase()) });
 	}
 
 }

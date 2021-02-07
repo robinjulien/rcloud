@@ -28,12 +28,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-			  "src/dropzone.css"
+              "src/styles.css"
             ],
-            "scripts": [
-				"src/dropzone.js"
-			]
+            "scripts": []
           },
           "configurations": {
             "production": {

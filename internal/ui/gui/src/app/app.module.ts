@@ -18,6 +18,10 @@ import { IsnotdirPipe } from './pipes/isnotdir.pipe';
 import { SortfoldersfilesPipe } from './pipes/sortfoldersfiles.pipe';
 import { SortfilesalphabeticalPipe } from './pipes/sortfilesalphabetical.pipe';
 import { MenuActionComponent } from './pages/dashboard/menu-action/menu-action.component';
+import { AdminViewComponent } from './pages/admin/admin-view/admin-view.component';
+import { AlphabeticalUsersPipe } from './pipes/alphabetical-users.pipe';
+import { AdminBeforeRegularPipe } from './pipes/admin-before-regular.pipe';
+import { ChangePasswordViewComponent } from './pages/change-password/change-password-view/change-password-view.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +37,10 @@ import { MenuActionComponent } from './pages/dashboard/menu-action/menu-action.c
     SortfoldersfilesPipe,
     SortfilesalphabeticalPipe,
     MenuActionComponent,
+    AdminViewComponent,
+    AlphabeticalUsersPipe,
+    AdminBeforeRegularPipe,
+    ChangePasswordViewComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,22 @@
-<form (ngSubmit)="onSubmit(f)" #f="ngForm">
-	<input type="text" name="id" ngModel>
-	<input type="password" name="password" ngModel>
-	<input type="submit" value="Log In">
-</form>
+<div class="container" *ngIf="wrongidpwd">
+	<div class="alert">
+		<span class="closebtn" (click)="wrongidpwd = false">&times;</span>
+		Wrong ID/password
+	</div>
+</div>
+
+<div class="container">
+	<form (ngSubmit)="onSubmit(f)" #f="ngForm">
+		<div class="form-group">
+			<label for="id">ID :</label>
+			<input type="text" id="id" name="id" placeholder="ID..." ngModel>
+		</div>
+		<div class="form-group">
+			<label for="password">Password :</label>
+			<input type="password" id="password" name="password" placeholder="Password..." ngModel>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-secondary" value="Log In">
+		</div>
+	</form>
+</div>

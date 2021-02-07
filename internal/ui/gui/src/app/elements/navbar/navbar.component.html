@@ -3,14 +3,14 @@
 		<a routerLink="/" class="title link-item">RCloud</a>
 	</div>
 	<div class="navbar-group">
-		<span class="link-item" *ngIf="!isLoggedIn()">
+		<div class="link-item" *ngIf="!isLoggedIn()">
 			<a routerLink="/login" >Log in</a>
-		</span>
-		<span *ngIf="isLoggedIn()">
-			Logged in as {{ getUserID() }} {{ getUserAdmin() ? "(admin)" : "" }}
-		</span>
-		<span class="link-item" *ngIf="isLoggedIn()">
+		</div>
+		<div class="link-text" *ngIf="isLoggedIn()">
+			Logged in as {{ getUserID() }}{{ getUserAdmin() ? " (admin)" : "" }}
+		</div>
+		<div class="link-item" *ngIf="isLoggedIn()">
 			<a routerLink="/logout" >Log out</a>
-		</span>
+		</div>
 	</div>
 </div>

@@ -20,3 +20,10 @@
 	margin: 0 5px;
 	font-size: larger;
 }
+
+.navbar-group {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+}

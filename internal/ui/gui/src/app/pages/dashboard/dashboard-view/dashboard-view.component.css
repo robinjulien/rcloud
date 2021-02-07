@@ -8,7 +8,7 @@
 	width: 100%;
 }
 
-.file-explorer-table tr:hover {
+.file-explorer-table tr:not(:nth-child(1)):hover {
 	background-color: #d6d6d6;
 }
 
@@ -67,4 +67,9 @@
 
 .expand {
 	width: 100%;
+}
+
+.buttons-system-management button {
+	background-color: #99a0a7;
+	border-color: transparent;
 }

@@ -40,7 +40,7 @@ func init() {
 
 	// Default user
 	hash, _ := sessions.GeneratePwdHash([]byte("admin"))
-	u := User{ID: "admin", PwdHash: hash, Admin: true}
+	u := User{ID: "administrator", PwdHash: hash, Admin: true}
 
 	authstore.Users = enhancedmaps.New()
 	authstore.Users.Set("admin", u)
@@ -54,6 +54,7 @@ func AuthHandler() http.Handler {
 	router.Handle("/logout", MethodMiddleware("POST", http.HandlerFunc(Logout)))
 	router.Handle("/amiloggedin", MethodMiddleware("GET", http.HandlerFunc(AmILoggedIn)))
 	router.Handle("/whoami", MethodMiddleware("GET", http.HandlerFunc(WhoAmI)))
+	router.Handle("/changepassword", MethodMiddleware("POST", http.HandlerFunc(ChangePassword)))
 	return router
 }
 
@@ -206,4 +207,47 @@ func WhoAmI(w http.ResponseWriter, r *http.Request) {
 		ID:    u.ID,
 		Admin: u.Admin,
 	}})
+}
+
+// ChangePassword /auth/changepassword
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	u := GetUserByCookies(r)
+
+	oldpwd := r.PostFormValue("oldpassword")
+	newpwd := r.PostFormValue("newpassword")
+
+	if oldpwd == "" || newpwd == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if !sessions.CheckPassword(u.PwdHash, []byte(oldpwd)) {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Wrong password"})
+		return
+	}
+
+	newpwdHash, ok := sessions.GeneratePwdHash([]byte(newpwd))
+
+	if !ok {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
+		return
+	}
+
+	u.PwdHash = newpwdHash
+
+	err := authstore.Users.Set(u.ID, u)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
+		return
+	}
+
+	err = authstore.Users.WriteFile(authstore.Path)
+
+	if err != nil {
+		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
+		return
+	}
+
+	RespondJSON(w, BaseResponse{Success: true})
 }

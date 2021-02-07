@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BaseResponse } from './filemanager.service';
 
 interface responseLogin {
 	success: boolean
@@ -16,7 +17,7 @@ interface responseAmILoggedIn {
 	loggedIn: boolean
 }
 
-interface PublicUser {
+export interface PublicUser {
 	id: string
 	admin: boolean
 }
@@ -48,6 +49,10 @@ export class AuthService {
 		return this.http.get<responseAmILoggedIn>("/api/auth/amiloggedin")
 	}
 
+	whoAmI() {
+		return this.http.get<responseWhoAmI>("/api/auth/whoami")
+	}
+
 	isLoggedIn(): boolean {
 		return this.loggedIn
 	}
@@ -65,5 +70,12 @@ export class AuthService {
 
 	logout(): Observable<any> {
 		return this.http.post("/api/auth/logout", null)
+	}
+
+	changeMyPassword(oldpwd: string, newpwd: string) {
+		let fd = new FormData()
+		fd.append("oldpassword", oldpwd)
+		fd.append("newpassword", newpwd)
+		return this.http.post<BaseResponse>("/api/auth/change-password", fd)
 	}
 }

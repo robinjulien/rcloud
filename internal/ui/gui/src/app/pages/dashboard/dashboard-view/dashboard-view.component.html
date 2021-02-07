@@ -1,14 +1,44 @@
-<div class="container controls">
+<div class="container">
+	<div class="buttons buttons-system-management">
+		<a routerLink="change-password">
+			<button class="btn btn-secondary" (click)="ls()">
+				<img src="/assets/icons/edit-3.svg"><span>Change my password</span>
+			</button>
+		</a>
+		<a routerLink="admin">
+			<button class="btn btn-secondary">
+				<img src="/assets/icons/users.svg"><span>Users administration panel</span>
+			</button>
+		</a>
+	</div>
+</div>
+
+<div class="container">
+	<hr />
+</div>
+
+<div class="container">
 	<div class="buttons">
-		<button class="btn btn-secondary" (click)="ls()"><img
-				src="/assets/icons/refresh-cw.svg"><span>Refresh</span></button>
-		<button class="btn btn-secondary" (click)="mkdir()"><img src="/assets/icons/folder-plus.svg"><span>New
-				Folder</span></button>
-		<button class="btn btn-secondary" (click)="touch()"><img src="/assets/icons/file-plus.svg"><span>New
-				File</span></button>
-		<button class="btn btn-secondary" (click)="paste()"><img src="/assets/icons/clipboard.svg"><span>Paste</span></button>
-		<button class="btn btn-secondary" (click)="upload(inputfiles)"><img src="/assets/icons/upload.svg"><span>Upload
-				Selection</span></button>
+		<button class="btn btn-secondary" (click)="ls()">
+			<img src="/assets/icons/refresh-cw.svg">
+			<span>Refresh</span>
+		</button>
+		<button class="btn btn-secondary" (click)="mkdir()">
+			<img src="/assets/icons/folder-plus.svg">
+			<span>New Folder</span>
+		</button>
+		<button class="btn btn-secondary" (click)="touch()">
+			<img src="/assets/icons/file-plus.svg">
+			<span>New File</span>
+		</button>
+		<button class="btn btn-secondary" (click)="paste()">
+			<img src="/assets/icons/clipboard.svg">
+			<span>Paste</span>
+		</button>
+		<button class="btn btn-secondary" (click)="upload(inputfiles)">
+			<img src="/assets/icons/upload.svg">
+			<span>Upload Selection</span>
+		</button>
 		<input type="file" multiple is="drop-files" class="upload-form" #inputfiles>
 	</div>
 	<progress class="upload-progressbar" [value]="uploadProgress" max="100" *ngIf="uploadProgress != 0"></progress>
@@ -30,7 +60,8 @@
 			<td>..</td>
 			<td></td>
 		</tr>
-		<tr *ngFor="let file of files | sortfoldersfiles; let i = index" (click)="clickRow($event, i)">
+		<tr *ngFor="let file of files | sortfilesalphabetical | sortfoldersfiles; let i = index"
+			(click)="clickRow($event, i)">
 			<td *ngIf="file.isDir" class="shrink"><img src="/assets/icons/folder.svg"></td>
 			<td *ngIf="!file.isDir" class="shrink"><img
 					[src]="'/assets/icons/' + (file.name.split('.')[file.name.split('.').length - 1] | exttoimg)"></td>
@@ -51,4 +82,5 @@
 	</div>
 </div>
 
-<app-menu-action [file]="selectedFile" [path]="path" (closeEvent)="selectedFile = undefined" (refreshEvent)="ls()" (copycutEvent)="copycut = $event"></app-menu-action>
+<app-menu-action [file]="selectedFile" [path]="path" (closeEvent)="selectedFile = undefined" (refreshEvent)="ls()"
+	(copycutEvent)="copycut = $event"></app-menu-action>
