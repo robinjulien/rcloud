@@ -43,7 +43,7 @@ func init() {
 	u := User{ID: "administrator", PwdHash: hash, Admin: true}
 
 	authstore.Users = enhancedmaps.New()
-	authstore.Users.Set("admin", u)
+	authstore.Users.Set("administrator", u)
 	gob.Register(User{})
 }
 
@@ -54,7 +54,7 @@ func AuthHandler() http.Handler {
 	router.Handle("/logout", MethodMiddleware("POST", http.HandlerFunc(Logout)))
 	router.Handle("/amiloggedin", MethodMiddleware("GET", http.HandlerFunc(AmILoggedIn)))
 	router.Handle("/whoami", MethodMiddleware("GET", http.HandlerFunc(WhoAmI)))
-	router.Handle("/changepassword", MethodMiddleware("POST", http.HandlerFunc(ChangePassword)))
+	router.Handle("/changepassword", MethodMiddleware("POST", AuthMiddleware(http.HandlerFunc(ChangePassword))))
 	return router
 }
 
@@ -235,7 +235,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	u.PwdHash = newpwdHash
 
-	err := authstore.Users.Set(u.ID, u)
+	err := authstore.Users.Set(u.ID, *u)
 
 	if err != nil {
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})

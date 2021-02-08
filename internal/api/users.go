@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/robinjulien/rcloud/pkg/sessions"
 )
@@ -30,6 +32,7 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 		u, ok := v.(User)
 
 		if !ok {
+			fmt.Fprintln(os.Stderr, "type assertion failed")
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -60,6 +63,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	pwdHash, ok := sessions.GeneratePwdHash([]byte(pwdRaw))
 
 	if !ok {
+		fmt.Fprintln(os.Stderr, "bcrypt hash failed")
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
@@ -71,6 +75,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
@@ -78,6 +83,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
@@ -97,6 +103,7 @@ func DelUser(w http.ResponseWriter, r *http.Request) {
 	err := authstore.Users.Remove(id)
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
@@ -104,6 +111,7 @@ func DelUser(w http.ResponseWriter, r *http.Request) {
 	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}
@@ -125,6 +133,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 	exists, err := authstore.Users.Exists(id)
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 	}
 
@@ -137,6 +146,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		pwdHash, ok := sessions.GeneratePwdHash([]byte(pwdRaw))
 
 		if !ok {
+			fmt.Fprintln(os.Stderr, err)
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -146,6 +156,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		u, ok := uRaw.(User)
 
 		if !ok || err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -155,6 +166,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		err = authstore.Users.Set(id, u)
 
 		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -166,6 +178,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		u, ok := uRaw.(User)
 
 		if !ok || err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -175,6 +188,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 		err = authstore.Users.Set(id, u)
 
 		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 			return
 		}
@@ -183,6 +197,7 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 	err = authstore.Users.WriteFile(authstore.Path)
 
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
 		return
 	}

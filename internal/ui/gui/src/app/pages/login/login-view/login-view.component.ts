@@ -17,7 +17,14 @@ export class LoginViewComponent implements OnInit {
 	}
 
 	onSubmit(f: NgForm) {
-		this.auth.attemptLogin(f.value["id"], f.value["password"]).subscribe(res => {
+		let id = f.value["id"]
+		let password = f.value["password"]
+
+		if (id == undefined || id == "" || password == undefined || password == "") {
+			return
+		}
+
+		this.auth.attemptLogin(id, password).subscribe(res => {
 			if (res.success) {
 				this.auth.loadStatus()
 				this.router.navigate(["/"])

@@ -11,7 +11,8 @@ const routes: Routes = [
 	{path: "login", component: LoginViewComponent },
 	{path: "logout", component: LogoutViewComponent},
 	{path: "admin", component: AdminViewComponent},
-	{path: "change-password", component: ChangePasswordViewComponent}
+	{path: "change-password", component: ChangePasswordViewComponent},
+	{path: "**", redirectTo: ""}
 ];
 
 @NgModule({

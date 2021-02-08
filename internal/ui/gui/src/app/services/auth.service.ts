@@ -76,6 +76,6 @@ export class AuthService {
 		let fd = new FormData()
 		fd.append("oldpassword", oldpwd)
 		fd.append("newpassword", newpwd)
-		return this.http.post<BaseResponse>("/api/auth/change-password", fd)
+		return this.http.post<BaseResponse>("/api/auth/changepassword", fd)
 	}
 }

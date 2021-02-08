@@ -8,11 +8,11 @@ import (
 	"net/http"
 )
 
-//go:embed gui/*
+//go:embed gui/dist/gui/*
 var fsys embed.FS
 
 func FS() http.FileSystem {
-	guifsys, err := fs.Sub(fsys, "gui")
+	guifsys, err := fs.Sub(fsys, "gui/dist/gui")
 
 	if err != nil {
 		panic(err)
