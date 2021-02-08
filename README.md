@@ -6,7 +6,7 @@ Dependencies : go 1.16+ compiler, node/npm (Angular)
 
 Install Angular CLI : `npm install -g @angular/cli`
 
-Go to `internal/ui/gui`, and run `ng build`.
+Go to `internal/ui/gui`, and run `ng build --prod`.
 
 Then go back to the root, and run `go build -tags prod ./cmd/rcloud`.
 
