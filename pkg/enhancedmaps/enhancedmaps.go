@@ -64,7 +64,7 @@ func (db *Map) ReadFile(filename string) error {
 
 // WriteFile writes the data of the map to a file
 func (db *Map) WriteFile(filename string) error {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
 
 	if err != nil {
 		if errors.Is(err, os.ErrPermission) {

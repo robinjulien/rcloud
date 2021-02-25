@@ -116,7 +116,7 @@ func Touch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, err := os.OpenFile(path, os.O_CREATE, FilePerm)
+	file, err := os.OpenFile(path, os.O_CREATE, 0666)
 	file.Close()
 
 	if err != nil {

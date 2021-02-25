@@ -3,3 +3,4 @@ rcloud
 rcloud.exe
 *.exe
 *.db
+.DS_Store
