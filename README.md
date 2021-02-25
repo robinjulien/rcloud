@@ -23,8 +23,7 @@ The database will be created automatically at the given path, or if it exists it
 Note that each start of the application invalidates all sessions. You will have to log in after a restart.
 
 ## TODO
-- Improve security (https, http only cookies, etc...)
+- Improve security (https mode to enable secure cookies, maybe clic jacking prevention, etc...)
 - Remove admin panel button for non admin users
-- Write tests
 - Alert on editor save, on upload finished
-- Little API refactor (BaseResponse at least on each response)
+- maybe default build tag on production
