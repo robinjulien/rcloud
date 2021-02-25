@@ -26,4 +26,5 @@ Note that each start of the application invalidates all sessions. You will have 
 `https` option enables https mode. This does NOT start an https server. Instead, it enables security options like secure cookies. This option is useful to tell the application that it is running behind a ssl/tls reverse proxy.
 
 ## TODO
-Nothing at the moment
+- DB is created relatively to the folder to list
+- table style (at least on safari) when there is go back link
