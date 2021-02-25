@@ -28,6 +28,8 @@ var (
 	ServerKey []byte
 
 	authstore AuthStore
+
+	httpsMode bool = false
 )
 
 func init() {
@@ -113,7 +115,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func createCookie(expiration time.Time) *http.Cookie {
 	var cookie *http.Cookie = new(http.Cookie)
 	cookie.HttpOnly = true                    // XSS Attack
-	cookie.Secure = false                     // HTTPS only // TODO change this
+	cookie.Secure = httpsMode                 // HTTPS only if https mode enabled
 	cookie.SameSite = http.SameSiteStrictMode // CRSF Attack SameSiteLaxMode peut être plus permissif
 	cookie.Expires = expiration
 	cookie.Path = "/"

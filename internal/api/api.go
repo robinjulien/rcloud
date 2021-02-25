@@ -36,8 +36,10 @@ func SetUp(directorypath string, databasepath string) {
 }
 
 // Handler returns the API endpoints handler
-func Handler() http.Handler {
+func Handler(https bool) http.Handler {
 	router := http.NewServeMux()
+
+	httpsMode = https
 
 	router.Handle("/auth/", http.StripPrefix("/auth", AuthHandler()))
 	router.Handle("/fm/", http.StripPrefix("/fm", AuthMiddleware(FmHandler())))

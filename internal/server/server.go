@@ -9,13 +9,13 @@ import (
 )
 
 // Serve set up directorypath, routes and launch the server
-func Serve(directorypath string, databasepath string, port string) {
+func Serve(directorypath string, databasepath string, port string, https bool) {
 	var ah *angularhandler.AngularHandler = angularhandler.New(ui.FS())
 
 	api.SetUp(directorypath, databasepath)
 	router := http.NewServeMux()
 	router.Handle("/", ah)
-	router.Handle("/api/", http.StripPrefix("/api", api.Handler()))
+	router.Handle("/api/", http.StripPrefix("/api", api.Handler(https)))
 
 	http.ListenAndServe(":"+port, router)
 }
