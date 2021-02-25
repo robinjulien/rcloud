@@ -48,6 +48,10 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit() {
 	}
 
+	isAdmin(): boolean {
+		return this.auth.isLoggedIn() && this.auth.getUser().admin
+	}
+
 	isRoot() {
 		return [".", "/", "./", ""].includes(this.path)
 	}

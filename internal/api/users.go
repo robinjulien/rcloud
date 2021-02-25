@@ -33,7 +33,7 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 
 		if !ok {
 			fmt.Fprintln(os.Stderr, "type assertion failed")
-			RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "Internal error"})
+			RespondJSON(w, responseListUsers{BaseResponse: BaseResponse{Success: false, ErrorMessage: "Internal error"}})
 			return
 		}
 

@@ -209,12 +209,12 @@ func Cat(w http.ResponseWriter, r *http.Request) {
 	stats, err := os.Stat(path)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: err.Error()})
+		RespondJSON(w, responseCat{BaseResponse: BaseResponse{Success: false, ErrorMessage: err.Error()}})
 		return
 	}
 
 	if stats.IsDir() {
-		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: "requested ressource is a directory"})
+		RespondJSON(w, responseCat{BaseResponse: BaseResponse{Success: false, ErrorMessage: "requested ressource is a directory"}})
 		return
 	}
 
@@ -225,7 +225,7 @@ func Cat(w http.ResponseWriter, r *http.Request) {
 	content, err := os.ReadFile(path)
 
 	if err != nil {
-		RespondJSON(w, BaseResponse{Success: false, ErrorMessage: err.Error()})
+		RespondJSON(w, responseCat{BaseResponse: BaseResponse{Success: false, ErrorMessage: err.Error()}})
 		return
 	}
 

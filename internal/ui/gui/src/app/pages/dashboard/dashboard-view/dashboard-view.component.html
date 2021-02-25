@@ -5,7 +5,7 @@
 				<img src="/assets/icons/edit-3.svg"><span>Change my password</span>
 			</button>
 		</a>
-		<a routerLink="admin">
+		<a routerLink="admin" *ngIf="isAdmin()">
 			<button class="btn btn-secondary">
 				<img src="/assets/icons/users.svg"><span>Users administration panel</span>
 			</button>
