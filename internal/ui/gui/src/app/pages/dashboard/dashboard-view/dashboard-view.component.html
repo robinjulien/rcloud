@@ -56,10 +56,10 @@
 			<th></th>
 		</tr>
 		<tr *ngIf="!isRoot() && lsLoaded" (click)="navigate(-1)">
-			<td class="shrink"></td>><img src="/assets/icons/arrow-left-circle.svg"></td>
+			<td class="shrink"><img src="/assets/icons/arrow-left-circle.svg"></td>
 			<td class="expand">..</td>
-			<td class="shrink"></td>></td>
-			<td class="shrink"></tdclass>></td>
+			<td class="shrink"></td>
+			<td class="shrink"></td>
 		</tr>
 		<tr *ngFor="let file of files | sortfilesalphabetical | sortfoldersfiles; let i = index"
 			(click)="clickRow($event, i)">
