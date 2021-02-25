@@ -50,10 +50,10 @@
 	</div>
 	<table *ngIf="files != undefined" class="file-explorer-table">
 		<tr>
-			<th></th>
-			<th>Name</th>
-			<th>Size</th>
-			<th></th>
+			<th class="shrink"></th>
+			<th class="expand">Name</th>
+			<th class="shrink">Size</th>
+			<th class="shrink"></th>
 		</tr>
 		<tr *ngIf="!isRoot() && lsLoaded" (click)="navigate(-1)">
 			<td class="shrink"><img src="/assets/icons/arrow-left-circle.svg"></td>
