@@ -107,7 +107,9 @@ export class MenuActionComponent implements OnInit {
 	save() {
 		console.log(this.content)
 		this.fm.echo(this.path + "/" + this.file?.name, this.content).subscribe(res => {
-			if (!res.success) {
+			if (res.success) {
+				window.alert("Sucessfully saved.")
+			} else {
 				window.alert(res.errorMessage)
 			}
 		})

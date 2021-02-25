@@ -214,6 +214,7 @@ export class DashboardViewComponent implements OnInit, AfterViewInit {
 						if (!json.success) {
 							window.alert(json.errorMessage)
 						} else {
+							window.alert("Upload successful.")
 							this.ls()
 						}
 

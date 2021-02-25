@@ -24,6 +24,3 @@ Note that each start of the application invalidates all sessions. You will have 
 
 ## TODO
 - Improve security (https mode to enable secure cookies, maybe clic jacking prevention, etc...)
-- Remove admin panel button for non admin users
-- Alert on editor save, on upload finished
-- maybe default build tag on production
